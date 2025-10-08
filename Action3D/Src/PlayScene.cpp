@@ -3,8 +3,14 @@
 #include "CsvReader.h"
 #include <assert.h>
 
+#include "Field.h"
+#include "GameObject.h"
+#include "Player.h"
+
 PlayScene::PlayScene()
 {
+	Instantiate<CPlayer>();
+	Instantiate<CField>();
 }
 
 PlayScene::~PlayScene()
