@@ -16,8 +16,3 @@ void CField::Update()
 {
     Object3D::Update();
 }
-
-void CField::Draw()
-{
-    Object3D::Draw();
-}

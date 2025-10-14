@@ -6,6 +6,6 @@ class CPlayer :public Object3D
 public:
     CPlayer();
     ~CPlayer();
+    void ImGUi(int x, int y, int b);
     void Update() override;
-    void Draw() override;
 };

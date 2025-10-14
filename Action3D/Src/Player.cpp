@@ -19,9 +19,24 @@ CPlayer::~CPlayer()
 {
 }
 
+void CPlayer::ImGUi( int x, int y, int b)
+{
+    ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_FirstUseEver);
+    ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiCond_FirstUseEver);
+    ImGui::Begin("Pad");
+    ImGui::InputInt("LX",&x);
+    ImGui::InputInt("LY",&y);
+    ImGui::InputInt("B",&b);
+    ImGui::End();
+}
 void CPlayer::Update()
 {
     Object3D::Update();
+    auto inp = GameDevice()->m_pDI->GetJoyState();
+    int x = inp.lRx;
+    int y = inp.lRy;
+    int b = inp.rgbButtons[0];
+    ImGUi(x,y,b);
     CDirectInput* di = GameDevice()->m_pDI;
     if (di->CheckKey(KD_DAT, DIK_D))
     {
@@ -54,9 +69,4 @@ void CPlayer::Update()
     GameDevice()->m_mView = XMMatrixLookAtLH(
         comPos, camLook, VECTOR3(0, 1, 0));
 	
-}
-
-void CPlayer::Draw()
-{
-    Object3D::Draw();
 }

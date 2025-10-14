@@ -286,7 +286,8 @@ STBRP_DEF void stbrp_init_target(stbrp_context *context, int width, int height, 
 #ifdef STBRP_LARGE_RECTS
    context->extra[1].y = (1<<30);
 #else
-   context->extra[1].y = 65535;
+   context->extra[1].y =
+      65535;
 #endif
    context->extra[1].next = nullptr;
 }

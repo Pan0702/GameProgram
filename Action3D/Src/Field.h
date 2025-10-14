@@ -8,5 +8,4 @@ public:
     ~CField();
 private:
     void Update() override;
-    void Draw() override;
 };
