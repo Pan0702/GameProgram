@@ -10,4 +10,5 @@ public:
 private:
     void Update() override;
     float RsticX();
+    float RsticY();
 };

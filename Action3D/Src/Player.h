@@ -8,4 +8,5 @@ public:
     ~CPlayer();
     void ImGUi(int x, int y, int b);
     void Update() override;
+    VECTOR2 LSticVec();
 };

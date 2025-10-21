@@ -10,7 +10,7 @@ CPlayer::CPlayer()
     animator = new Animator();
     mesh->Load("Data/Player/PlayerChara.mesh");
     animator->SetModel(mesh);
-    mesh->LoadAnimation(0,"Data/Player/Run.anmx",true);
+    mesh->LoadAnimation(0, "Data/Player/Run.anmx", true);
 
     animator->Play(0, true);
 }
@@ -19,16 +19,24 @@ CPlayer::~CPlayer()
 {
 }
 
-void CPlayer::ImGUi( int x, int y, int b)
+void CPlayer::ImGUi(int x, int y, int b)
 {
     ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiCond_FirstUseEver);
     ImGui::Begin("Pad");
-    ImGui::InputInt("LX",&x);
-    ImGui::InputInt("LY",&y);
-    ImGui::InputInt("B",&b);
+    ImGui::InputInt("LX", &x);
+    ImGui::InputInt("LY", &y);
+    ImGui::InputInt("B", &b);
     ImGui::End();
 }
+
+
+inline float CalcVector2Angle(const VECTOR3& vNorm1, const VECTOR3& vNorm2)
+{
+    float angle = acosf(vNorm1.x * vNorm2.x + vNorm1.y * vNorm2.y + vNorm1.z * vNorm2.z);
+    return angle * RadToDeg;
+}
+
 void CPlayer::Update()
 {
     Object3D::Update();
@@ -36,37 +44,52 @@ void CPlayer::Update()
     int x = inp.lRx;
     int y = inp.lRy;
     int b = inp.rgbButtons[0];
-    ImGUi(x,y,b);
+    ImGUi(x, y, b);
     CDirectInput* di = GameDevice()->m_pDI;
-    if (di->CheckKey(KD_DAT, DIK_D))
+    VECTOR2 stick = LSticVec();
+    VECTOR3 camVec = GameDevice()->m_vLookatPt - GameDevice()->m_vEyePt;
+    float camAngle = atan2f(camVec.x, camVec.z);
+    auto velocity = VECTOR3(stick.x, 0, -stick.y);
+    if (magnitude(velocity) > 0)
     {
-        transform.rotation.y += 3.0f * DegToRad;
+        velocity = velocity * XMMatrixRotationY(camAngle);
+        transform.rotation.y = atan2f(velocity.x, velocity.z);
+        transform.position += (velocity * 0.05f);
     }
-    if (di->CheckKey(KD_DAT, DIK_A))
+    XMMATRIX mat = XMMatrixRotationY(transform.rotation.y);
+    VECTOR3 front = VECTOR3(0, 0, 1) * mat;
+    VECTOR3 right = VECTOR3(1, 0, 0) * mat;
+    VECTOR3 up = VECTOR3(0, 1, 0) * mat;
+}
+
+VECTOR2 CPlayer::LSticVec()
+{
+    auto ret = VECTOR2(0, 0);
+    auto inp = GameDevice()->m_pDI->GetJoyState();
+    float x = inp.lX;
+    float y = inp.lY;
+    ret.x = x / 1000.0f;
+    ret.y = y / 1000.0f;
+
+    if (GameDevice()->m_pDI->CheckKey(KD_DAT,DIK_D))
     {
-        transform.rotation.y -= 3.0f * DegToRad;
+        ret.x = 1.0f;
     }
-    if (di->CheckKey(KD_DAT, DIK_W))
+    if (GameDevice()->m_pDI->CheckKey(KD_DAT,DIK_A))
     {
-        // キャラクターの前に進む
-        // float speed = 0.05f;
-        VECTOR3 move = VECTOR3(0,0,0.05f);  // 回ってない時の移動ベクトル (0,0,1)*0.05fでもおｋ
-        //VECTOR3 move = VECTOR3(0,0,1)
-        MATRIX4X4 mat = XMMatrixRotationY(
-            transform.rotation.y);  // 回転行列
-
-        transform.position =      // 新しい場所 
-        transform.position/*元の場所*/ + move * mat/*移動量*/;
-        //移動量は回っていない時の移動ベクトル × 回転行列
+        ret.x = -1.0f;
     }
-	
-    MATRIX4X4 mat = XMMatrixRotationY(
-        transform.rotation.y);
-
-    VECTOR3 comPos = transform.position + VECTOR3(1, 2, -5) * mat;
-    VECTOR3 camLook = transform.position + VECTOR3 (0, 1, 0) * mat;  // Lookはｘとｚが０だから回転（＊mat）しても変わらない (1, 2, 0)にすると視点が斜め後ろになる
-
-    GameDevice()->m_mView = XMMatrixLookAtLH(
-        comPos, camLook, VECTOR3(0, 1, 0));
-	
+    if (GameDevice()->m_pDI->CheckKey(KD_DAT,DIK_S))
+    {
+        ret.y = 1.0f;
+    }
+    if (GameDevice()->m_pDI->CheckKey(KD_DAT,DIK_W))
+    {
+        ret.y = -1.0f;
+    }
+    if (magnitude(ret) > 1.0f)
+    {
+        ret = normalize(ret);
+    }
+    return ret;
 }
