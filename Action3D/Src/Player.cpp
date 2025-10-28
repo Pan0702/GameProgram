@@ -49,12 +49,25 @@ void CPlayer::Update()
     VECTOR2 stick = LSticVec();
     VECTOR3 camVec = GameDevice()->m_vLookatPt - GameDevice()->m_vEyePt;
     float camAngle = atan2f(camVec.x, camVec.z);
-    auto velocity = VECTOR3(stick.x, 0, -stick.y);
+    VECTOR3 velocity = VECTOR3(stick.x, 0, -stick.y);
     if (magnitude(velocity) > 0)
     {
         velocity = velocity * XMMatrixRotationY(camAngle);
-        transform.rotation.y = atan2f(velocity.x, velocity.z);
-        transform.position += (velocity * 0.05f);
+        float ang = atan2f(velocity.x, velocity.z);
+        float diff = ang - transform.rotation.y;
+        if (diff >= -30.0f * DegToRad && diff <= 30.0f * DegToRad)
+        {
+            //³–ÊŒü‚¢‚Ä‚é‚©‚ç‰½‚à‚µ‚È‚¢
+        }
+        else if (diff > 0)
+        {
+            transform.rotation.y += 30.0f * DegToRad;
+        }else if (diff < 0)
+        {
+            transform.rotation.y -= 30.0f * DegToRad;
+        }
+        //transform.rotation.y = ang;
+        transform.position += (velocity * 0.5f);
     }
     XMMATRIX mat = XMMatrixRotationY(transform.rotation.y);
     VECTOR3 front = VECTOR3(0, 0, 1) * mat;
