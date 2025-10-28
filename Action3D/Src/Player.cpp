@@ -24,9 +24,7 @@ void CPlayer::ImGUi(int x, int y, int b)
     ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_FirstUseEver);
     ImGui::SetNextWindowSize(ImVec2(200, 100), ImGuiCond_FirstUseEver);
     ImGui::Begin("Pad");
-    ImGui::InputInt("LX", &x);
-    ImGui::InputInt("LY", &y);
-    ImGui::InputInt("B", &b);
+    ImGui::Text("x:%lf", transform.rotation.y * RadToDeg);
     ImGui::End();
 }
 
@@ -53,11 +51,14 @@ void CPlayer::Update()
     if (magnitude(velocity) > 0)
     {
         velocity = velocity * XMMatrixRotationY(camAngle);
+#if false
         float ang = atan2f(velocity.x, velocity.z);
         float diff = ang - transform.rotation.y;
+        while (diff < -180.0f) diff += 360.0f * DegToRad;
+        while (diff > 180.0f) diff -= 360.0f * DegToRad;
         if (diff >= -30.0f * DegToRad && diff <= 30.0f * DegToRad)
         {
-            //³–ÊŒü‚¢‚Ä‚é‚©‚ç‰½‚à‚µ‚È‚¢
+           transform.rotation.y = ang;
         }
         else if (diff > 0)
         {
@@ -66,7 +67,8 @@ void CPlayer::Update()
         {
             transform.rotation.y -= 30.0f * DegToRad;
         }
-        //transform.rotation.y = ang;
+#else
+#endif
         transform.position += (velocity * 0.5f);
     }
     XMMATRIX mat = XMMatrixRotationY(transform.rotation.y);
