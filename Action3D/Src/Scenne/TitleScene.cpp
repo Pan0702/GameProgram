@@ -1,5 +1,5 @@
 #include "TitleScene.h"
-#include "GameMain.h"
+#include "../GameMain.h"
 
 TitleScene::TitleScene()
 {
