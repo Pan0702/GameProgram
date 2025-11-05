@@ -3,16 +3,18 @@
 #include "../CsvReader.h"
 #include <assert.h>
 
-#include "Camera.h"
-#include "Field.h"
-#include "GameObject.h"
-#include "Player.h"
+#include "../Player/Camera.h"
+#include "../Field.h"
+#include "../GameObject.h"
+#include "../Enemy/Golem.h"
+#include "../Player/Player.h"
 
 PlayScene::PlayScene()
 {
 	Instantiate<CPlayer>();
 	Instantiate<CField>();
 	Instantiate<CCamera>();
+		new CGolem(VECTOR3(5, 0, 10),0);
 }
 
 PlayScene::~PlayScene()

@@ -1,7 +1,10 @@
 #include "Player.h"
 
-#include "PlayScene.h"
+#include "../Enemy/Golem.h"
 
+//#include "PlayScene.h"
+
+class CGolem;
 class PlayScene;
 
 enum ANIM_ID
@@ -57,7 +60,15 @@ void CPlayer::Update()
         UpdateAtk3();
         break;
     }
-    Object3D::Update();;
+    Object3D::Update();
+}
+
+void CPlayer::Draw()
+{
+    
+    Object3D::Draw();
+    CSprite spr;
+    spr.DrawLine3D(VECTOR3(0,0,0),VECTOR3(0,5,0),0xffffff);
 }
 
 void CPlayer::UpdateNormal()
@@ -113,7 +124,9 @@ void CPlayer::UpdateNormal()
         }
 
 #endif
-        transform.position += (velocity * 0.5f);
+        transform.position += (velocity * 0.1f);
+        CGolem* gom = ObjectManager::FindGameObject<CGolem>();
+            transform.position += gom->ColldeSphere(transform.position + VECTOR3(0, 0.5f, 0), 0.5f);
         animator->MergePlay(A_RUN);
     }
     else

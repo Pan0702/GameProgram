@@ -7,6 +7,7 @@ public:
     CPlayer();
     ~CPlayer();
     void Update() override;
+    void Draw() override;
 private:
     VECTOR2 LSticVec();
     
