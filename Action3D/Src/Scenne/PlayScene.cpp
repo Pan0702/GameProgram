@@ -14,7 +14,7 @@ PlayScene::PlayScene()
 	Instantiate<CPlayer>();
 	Instantiate<CField>();
 	Instantiate<CCamera>();
-		new CGolem(VECTOR3(5, 0, 10),0);
+		new CGolem(VECTOR3(5, 0, 10));
 }
 
 PlayScene::~PlayScene()

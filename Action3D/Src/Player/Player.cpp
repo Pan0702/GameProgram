@@ -9,7 +9,7 @@ class PlayScene;
 
 enum ANIM_ID
 {
-    A_RUN = 0,
+    A_WALK = 0,
     A_WAIT,
     A_ATTACK1,
     A_ATTACK2,
@@ -22,13 +22,13 @@ CPlayer::CPlayer()
     animator = new Animator();
     mesh->Load("Data/Player/PlayerChara.mesh");
     animator->SetModel(mesh);
-    mesh->LoadAnimation(A_RUN, "Data/Player/Run.anmx", true);
+    mesh->LoadAnimation(A_WALK, "Data/Player/Run.anmx", true);
     mesh->LoadAnimation(A_WAIT, "Data/Player/Idle.anmx", true);
     mesh->LoadAnimation(A_ATTACK1, "Data/Player/attack1.anmx", false);
     mesh->LoadAnimation(A_ATTACK2, "Data/Player/attack2.anmx", false);
     mesh->LoadAnimation(A_ATTACK3, "Data/Player/attack3.anmx", false);
 
-    animator->Play(A_RUN);
+    animator->Play(A_WALK);
     ChangeState(ST_NORMAL);
 }
 
@@ -67,6 +67,7 @@ void CPlayer::Draw()
 {
     
     Object3D::Draw();
+    //MATRIX4X4 born = mesh->GetFrameMatrices(animator,34);
     CSprite spr;
     spr.DrawLine3D(VECTOR3(0,0,0),VECTOR3(0,5,0),0xffffff);
 }
@@ -127,7 +128,7 @@ void CPlayer::UpdateNormal()
         transform.position += (velocity * 0.1f);
         CGolem* gom = ObjectManager::FindGameObject<CGolem>();
             transform.position += gom->ColldeSphere(transform.position + VECTOR3(0, 0.5f, 0), 0.5f);
-        animator->MergePlay(A_RUN);
+        animator->MergePlay(A_WALK);
     }
     else
     {
@@ -170,7 +171,7 @@ void CPlayer::UpdateAtk1()
 
     if (animator->Finished())
     {
-        animator->MergePlay(A_RUN);
+        animator->MergePlay(A_WALK);
         ChangeState(ST_NORMAL);
     }
 }
@@ -205,7 +206,7 @@ void CPlayer::UpdateAtk2()
 
     if (animator->Finished())
     {
-        animator->MergePlay(A_RUN);
+        animator->MergePlay(A_WALK);
         ChangeState(ST_NORMAL);
     }
 }
@@ -214,7 +215,7 @@ void CPlayer::UpdateAtk3()
 {
     if (animator->Finished())
     {
-        animator->MergePlay(A_RUN);
+        animator->MergePlay(A_WALK);
         ChangeState(ST_NORMAL);
     }
 }

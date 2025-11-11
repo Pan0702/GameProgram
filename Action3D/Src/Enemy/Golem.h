@@ -4,7 +4,7 @@
 class CGolem : public Object3D
 {
 public:
-    CGolem(const VECTOR3& pos,const float& rotY);
+    CGolem(const VECTOR3& pos, const float& rotY = 0);
     ~CGolem();
     void Update();
     /**
@@ -17,6 +17,17 @@ public:
          * @param radius 球の半径
          * @return 衝突に関連する応答または補正ベクトルを VECTOR3 として返します。
          */
-    VECTOR3 ColldeSphere(const VECTOR3& center ,const float& radius);
-    
+    VECTOR3 ColldeSphere(const VECTOR3& center, const float& radius);
+
+private:
+    void UpdateAction();
+
+    enum Action
+    {
+        ACT_CHASE = 0,
+        ACT_PUNCH
+    };
+    Action action;
+    void ActChase();
+    void ActPunch();
 };
