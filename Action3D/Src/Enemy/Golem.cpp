@@ -99,12 +99,9 @@ bool CGolem::InSight(const VECTOR3& pos, const float&disit,const float& angle)
     VECTOR3 toPlayer = pos - transform.position;
     VECTOR3 forward = VECTOR3(0, 0, 1) * XMMatrixRotationY(transform.rotation.y);
     VECTOR3 toPlayerNorm = normalize(toPlayer);
-    if (dot(normalize(forward), toPlayerNorm ) > cosf(angle) )
+    if (dot(normalize(forward), toPlayerNorm ) > cosf(angle) && magnitude(toPlayer) < disit)
     {
-        if (magnitude(toPlayer) < disit)
-        {
             return true;
-        }
     }
     return false;
 }
@@ -122,7 +119,8 @@ void CGolem::IntWalk()
 void CGolem::IntAtk()
 {
     CPlayer* pl = ObjectManager::FindGameObject<CPlayer>();
-    if (not InSight(pl->GetTransform().position, 5.0f, 20.0f * DegToRad))
+    VECTOR3 toPlayer = pl->GetTransform().position - transform.position;
+    if (magnitude(toPlayer) > 5.0f)
     {
         ChangeIntent(INT_WALK);
     }
