@@ -54,6 +54,12 @@
     <Filter Include="ソース ファイル\08_PlayScene">
       <UniqueIdentifier>{54c21df3-e977-4cb1-b703-924c7617f825}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\09_Ememy">
+      <UniqueIdentifier>{62c7b844-c146-454f-bcbe-38c37ea9d95c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\10_Stage">
+      <UniqueIdentifier>{9810d60f-c3b4-4c15-8105-627b1c8569af}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="Hlsl\DisplaceSkinMesh.hlsli">
@@ -249,9 +255,6 @@
     <ClInclude Include="Src\Macro.h">
       <Filter>ソース ファイル\01_ゲームメイン</Filter>
     </ClInclude>
-    <ClInclude Include="Src\TitleScene.h">
-      <Filter>ソース ファイル\07_TitleScene</Filter>
-    </ClInclude>
     <ClInclude Include="Src\ResourceManager.h">
       <Filter>ソース ファイル\05_フレームワーク</Filter>
     </ClInclude>
@@ -260,9 +263,6 @@
     </ClInclude>
     <ClInclude Include="Src\MainControl.h">
       <Filter>ソース ファイル\00_Windowsメイン</Filter>
-    </ClInclude>
-    <ClInclude Include="Src\PlayScene.h">
-      <Filter>ソース ファイル\08_PlayScene</Filter>
     </ClInclude>
     <ClInclude Include="Src\CsvReader.h">
       <Filter>ソース ファイル\02_ゲームライブラリ</Filter>
@@ -275,6 +275,24 @@
     </ClInclude>
     <ClInclude Include="Src\Animator.h">
       <Filter>ソース ファイル\02_ゲームライブラリ</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Player\Camera.h">
+      <Filter>ソース ファイル\08_PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Player\Player.h">
+      <Filter>ソース ファイル\08_PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Scenne\TitleScene.h">
+      <Filter>ソース ファイル\07_TitleScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Scenne\PlayScene.h">
+      <Filter>ソース ファイル\08_PlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Enemy\Golem.h">
+      <Filter>ソース ファイル\09_Ememy</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\Field.h">
+      <Filter>ソース ファイル\10_Stage</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -347,17 +365,11 @@
     <ClCompile Include="Src\ObjectManager.cpp">
       <Filter>ソース ファイル\05_フレームワーク</Filter>
     </ClCompile>
-    <ClCompile Include="Src\TitleScene.cpp">
-      <Filter>ソース ファイル\07_TitleScene</Filter>
-    </ClCompile>
     <ClCompile Include="Src\ResourceManager.cpp">
       <Filter>ソース ファイル\05_フレームワーク</Filter>
     </ClCompile>
     <ClCompile Include="Src\MainControl.cpp">
       <Filter>ソース ファイル\00_Windowsメイン</Filter>
-    </ClCompile>
-    <ClCompile Include="Src\PlayScene.cpp">
-      <Filter>ソース ファイル\08_PlayScene</Filter>
     </ClCompile>
     <ClCompile Include="Src\CsvReader.cpp">
       <Filter>ソース ファイル\02_ゲームライブラリ</Filter>
@@ -370,6 +382,24 @@
     </ClCompile>
     <ClCompile Include="Src\Animator.cpp">
       <Filter>ソース ファイル\02_ゲームライブラリ</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Player\Camera.cpp">
+      <Filter>ソース ファイル\08_PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Player\Player.cpp">
+      <Filter>ソース ファイル\08_PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Scenne\TitleScene.cpp">
+      <Filter>ソース ファイル\07_TitleScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Scenne\PlayScene.cpp">
+      <Filter>ソース ファイル\08_PlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Enemy\Golem.cpp">
+      <Filter>ソース ファイル\09_Ememy</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\Field.cpp">
+      <Filter>ソース ファイル\10_Stage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

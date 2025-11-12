@@ -9,6 +9,14 @@ public:
 	VECTOR3 position;
 	VECTOR3 rotation;
 	VECTOR3 scale;
+	VECTOR3 forward() const
+	{
+		return VECTOR3(0,0,1) * XMMatrixRotationY(rotation.y);
+	}
+	VECTOR3 right()const 
+	{
+		return VECTOR3(1,0,0) * XMMatrixRotationY(rotation.y);
+	}
 	Transform() {
 		position = VECTOR3(0, 0, 0);
 		rotation = VECTOR3(0, 0, 0);   // ƒ‰ƒWƒAƒ“Šp

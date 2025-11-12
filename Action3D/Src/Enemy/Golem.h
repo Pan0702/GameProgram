@@ -20,14 +20,29 @@ public:
     VECTOR3 ColldeSphere(const VECTOR3& center, const float& radius);
 
 private:
+    void UpdateIntention();
+    enum Intent
+    {
+        INT_WALK = 0,
+        INT_ATK
+    };
+    Intent intent;
+    void ChangeIntent(Intent inte);
+    bool InSight(const VECTOR3& pos, const float& disit, const float& angle);
+    void IntWalk();
+    void IntAtk();
+    
     void UpdateAction();
-
     enum Action
     {
         ACT_CHASE = 0,
-        ACT_PUNCH
+        ACT_PUNCH,
+        ACT_STAND,
     };
     Action action;
+    void ChangeAction(Action act);
     void ActChase();
     void ActPunch();
+    void ActStand();
+
 };
