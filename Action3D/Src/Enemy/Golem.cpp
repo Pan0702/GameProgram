@@ -27,6 +27,7 @@ CGolem::CGolem(const VECTOR3& pos, const float& rotY)
     mesh->LoadAnimation(A_DEATH, "Data/Golem/golem_die.anmx", false);
 
     transform.scale = VECTOR3(0.3f, 0.3f, 0.3f);
+    teritoriCenter = pos;
     action = ACT_STAND;
     intent = INT_WALK;
     animator->Play(A_IDLE);
@@ -42,7 +43,6 @@ void CGolem::Update()
     UpdateIntention();
     UpdateAction();
 }
-
 
 
 VECTOR3 CGolem::ColldeSphere(const VECTOR3& center, const float& radius)
@@ -73,6 +73,9 @@ void CGolem::UpdateIntention()
     case INT_ATK:
         IntAtk();
         break;
+    case INT_BACK:
+        IntBack();
+        break;
     default:
         break;
     }
@@ -87,42 +90,88 @@ void CGolem::ChangeIntent(Intent inte)
         ChangeAction(ACT_STAND);
         break;
     case INT_ATK:
-        ChangeAction(ACT_PUNCH);
+        ChangeAction(ACT_CHASE);
         break;
+    case INT_BACK:
+        ChangeAction(ACT_STAND);
     default:
         break;
     }
     intent = inte;
 }
-bool CGolem::InSight(const VECTOR3& pos, const float&disit,const float& angle)
+
+bool CGolem::InSight(const VECTOR3& pos, const float& dist, const float& angle) const
 {
     VECTOR3 toPlayer = pos - transform.position;
     VECTOR3 forward = VECTOR3(0, 0, 1) * XMMatrixRotationY(transform.rotation.y);
     VECTOR3 toPlayerNorm = normalize(toPlayer);
-    if (dot(normalize(forward), toPlayerNorm ) > cosf(angle) && magnitude(toPlayer) < disit)
+    if (dot(normalize(forward), toPlayerNorm) > cosf(angle) && magnitude(toPlayer) < dist)
     {
-            return true;
+        return true;
     }
     return false;
 }
+
 void CGolem::IntWalk()
 {
-
     CPlayer* pl = ObjectManager::FindGameObject<CPlayer>();
     if (InSight(pl->GetTransform().position, 5.0f, 20.0f * DegToRad))
     {
         ChangeIntent(INT_ATK);
     }
-
 }
 
 void CGolem::IntAtk()
 {
     CPlayer* pl = ObjectManager::FindGameObject<CPlayer>();
-    VECTOR3 toPlayer = pl->GetTransform().position - transform.position;
-    if (magnitude(toPlayer) > 5.0f)
+    if (not InSight(pl->GetTransform().position, 6.0f, 40.0f * DegToRad))
+    {
+        ChangeIntent(INT_BACK);
+    }
+    float v = magnitude(transform.position - teritoriCenter);
+    if (v > 10.0f)
+    {
+        ChangeIntent(INT_BACK);
+    }
+}
+
+void CGolem::IntBack()
+{
+    
+    animator->Play(A_WALK);
+    animator->SetPlaySpeed(1.0f);
+    float RotSpeed = 20.0f * DegToRad; //‰ñ“]‚Ì‚Í‚â‚³
+    float& lotY = transform.rotation.y;
+    VECTOR3 velocity = VECTOR3(teritoriCenter.x, 0, teritoriCenter.z) - VECTOR3(transform.position.x, 0, transform.position.z);
+    XMMATRIX mat = XMMatrixRotationY(lotY);
+    VECTOR3 foward = transform.forward();
+    float ip2 = dot(foward, normalize(velocity));
+
+    //30.0f * DegToRad‚ª’è”‚¾‚©‚çƒRƒ“ƒpƒCƒ‹Žž‚ÉŒvŽZÏ‚Ý‚É‚È‚Á‚Äˆ—•‰‰×‚ªŒ¸‚é
+    if (dot(foward, normalize(velocity)) > cosf(RotSpeed))
+    {
+        lotY = atan2f(velocity.x, velocity.z);
+    }
+    else
+    {
+        VECTOR3 right = VECTOR3(1, 0, 0) * mat;
+        if (dot(right, velocity) > 0)
+        {
+            lotY += RotSpeed;
+        }
+        else
+        {
+            lotY -= RotSpeed;
+        }
+    }
+    VECTOR3 move = VECTOR3(0, 0, 1) * XMMatrixRotationY(lotY);
+    transform.position += move * 0.02f;
+    VECTOR3 v = teritoriCenter - transform.position;
+    if (magnitude(v) < 1.0f)
     {
         ChangeIntent(INT_WALK);
+        animator->Play(A_IDLE);
+        animator->SetPlaySpeed(1.0f);
     }
 }
 
@@ -196,7 +245,7 @@ void CGolem::ActChase()
     }
     VECTOR3 move = VECTOR3(0, 0, 1) * XMMatrixRotationY(lotY);
     transform.position += move * 0.05f;
-    if ((plPos - transform.position).Length() < 2.0f)
+    if (magnitude(plPos - transform.position) < 2.0f)
     {
         ChangeAction(ACT_PUNCH);
     }

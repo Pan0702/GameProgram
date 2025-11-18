@@ -24,13 +24,15 @@ private:
     enum Intent
     {
         INT_WALK = 0,
-        INT_ATK
+        INT_ATK,
+        INT_BACK,
     };
     Intent intent;
     void ChangeIntent(Intent inte);
-    bool InSight(const VECTOR3& pos, const float& disit, const float& angle);
+    bool InSight(const VECTOR3& pos, const float& dist, const float& angle) const;
     void IntWalk();
     void IntAtk();
+    void IntBack();
     
     void UpdateAction();
     enum Action
@@ -44,5 +46,7 @@ private:
     void ActChase();
     void ActPunch();
     void ActStand();
+
+    VECTOR3 teritoriCenter;
 
 };

@@ -67,9 +67,11 @@ void CPlayer::Draw()
 {
     
     Object3D::Draw();
-    //MATRIX4X4 born = mesh->GetFrameMatrices(animator,34);
+    MATRIX4X4 handMat = mesh->GetFrameMatrices(animator,34);
+    VECTOR3 hand = VECTOR3(0,0,0) * handMat;
+    hand *= transform.matrix();
     CSprite spr;
-    spr.DrawLine3D(VECTOR3(0,0,0),VECTOR3(0,5,0),0xffffff);
+    spr.DrawLine3D(hand  ,VECTOR3(0,5,0),0x0000ff);
 }
 
 void CPlayer::UpdateNormal()
