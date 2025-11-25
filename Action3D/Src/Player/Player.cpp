@@ -70,8 +70,9 @@ void CPlayer::Draw()
     MATRIX4X4 handMat = mesh->GetFrameMatrices(animator,34);
     VECTOR3 hand = VECTOR3(0,0,0) * handMat;
     hand *= transform.matrix();
+    const VECTOR3 top = VECTOR3(0.9966,0.6536,0.14) * handMat * transform.matrix(); 
     CSprite spr;
-    spr.DrawLine3D(hand  ,VECTOR3(0,5,0),0x0000ff);
+    spr.DrawLine3D(hand  ,top,0x0000ff);
 }
 
 void CPlayer::UpdateNormal()
