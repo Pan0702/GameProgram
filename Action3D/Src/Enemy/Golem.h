@@ -8,16 +8,18 @@ public:
     ~CGolem();
     void Update();
     /**
-         * ‹…‚Æ‚±‚ÌƒIƒuƒWƒFƒNƒgŠÔ‚ÌÕ“ËŒŸo‚ğs‚¢‚Ü‚·B
-         *
-         * ‚±‚Ìƒƒ\ƒbƒh‚ÍA’†S“_‚Æ”¼Œa‚Å’è‹`‚³‚ê‚½‹…‚Æ
-         * Œ»İ‚ÌƒIƒuƒWƒFƒNƒg‚Æ‚ÌŒğ·‚Ü‚½‚Íd‚È‚è‚ğŒvZ‚µ‚Ü‚·B
-         *
-         * @param center ‹…‚Ì’†SˆÊ’u
-         * @param radius ‹…‚Ì”¼Œa
-         * @return Õ“Ë‚ÉŠÖ˜A‚·‚é‰“š‚Ü‚½‚Í•â³ƒxƒNƒgƒ‹‚ğ VECTOR3 ‚Æ‚µ‚Ä•Ô‚µ‚Ü‚·B
-         */
+     * çƒã¨ã“ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆé–“ã®è¡çªåˆ¤å®šã‚’è¡Œã„ã¾ã™ã€‚
+     *
+     * ã“ã®ãƒ¡ã‚½ãƒƒãƒ‰ã¯ã€ä¸­å¿ƒç‚¹ã¨åŠå¾„ã§å®šç¾©ã•ã‚ŒãŸçƒã¨
+     * ç¾åœ¨ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã¨ã®äº¤å·®ï¼ˆã¾ãŸã¯é‡ãªã‚Šï¼‰ã‚’è¨ˆç®—ã—ã¾ã™ã€‚
+     *
+     * @param center çƒã®ä¸­å¿ƒä½ç½®
+     * @param radius çƒã®åŠå¾„
+     * @return è¡çªã«é–¢é€£ã™ã‚‹è£œæ­£ãƒ™ã‚¯ãƒˆãƒ«ã‚’ VECTOR3 ã¨ã—ã¦è¿”ã—ã¾ã™ã€‚
+     */
     VECTOR3 ColldeSphere(const VECTOR3& center, const float& radius);
+    
+    bool CollideSword(const VECTOR3& top, const VECTOR3& btm);
 
 private:
     void UpdateIntention();
@@ -26,6 +28,7 @@ private:
         INT_WALK = 0,
         INT_ATK,
         INT_BACK,
+        INT_DEAD,
     };
     Intent intent;
     void ChangeIntent(Intent inte);
@@ -33,6 +36,7 @@ private:
     void IntWalk();
     void IntAtk();
     void IntBack();
+    void IntDead();
     
     void UpdateAction();
     enum Action
@@ -40,13 +44,15 @@ private:
         ACT_CHASE = 0,
         ACT_PUNCH,
         ACT_STAND,
+        ACT_DEAD,
     };
     Action action;
     void ChangeAction(Action act);
     void ActChase();
     void ActPunch();
     void ActStand();
+    void ActDead();
 
     VECTOR3 teritoriCenter;
-
+    float deadTimer;
 };

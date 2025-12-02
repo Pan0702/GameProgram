@@ -65,14 +65,16 @@ void CPlayer::Update()
 
 void CPlayer::Draw()
 {
-    
     Object3D::Draw();
-    MATRIX4X4 handMat = mesh->GetFrameMatrices(animator,34);
-    VECTOR3 hand = VECTOR3(0,0,0) * handMat;
-    hand *= transform.matrix();
-    const VECTOR3 top = VECTOR3(0.9966,0.6536,0.14) * handMat * transform.matrix(); 
     CSprite spr;
-    spr.DrawLine3D(hand  ,top,0x0000ff);
+    MATRIX4X4 handMat = mesh->GetFrameMatrices(animator, 34);
+    MATRIX4X4 mat = handMat * transform.matrix();
+    VECTOR3 hand = VECTOR3(0, 0, 0) * mat;
+    const VECTOR3 top = VECTOR3(0.9966, 0.6536, 0.14);
+    VECTOR3 t = top * mat;
+    spr.DrawLine3D(hand, t, 0x0000ff);
+    swordBtm = hand;
+    swordTop = t;
 }
 
 void CPlayer::UpdateNormal()
@@ -108,7 +110,7 @@ void CPlayer::UpdateNormal()
         VECTOR3 up = VECTOR3(0, 1, 0) * mat;
         float ip2 = dot(foward, normalize(velocity));
 
-        //30.0f * DegToRad‚ª’è”‚¾‚©‚çƒRƒ“ƒpƒCƒ‹Žž‚ÉŒvŽZÏ‚Ý‚É‚È‚Á‚Äˆ—•‰‰×‚ªŒ¸‚é
+        //30.0f * DegToRadï¿½ï¿½ï¿½è”ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Rï¿½ï¿½ï¿½pï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½ÉŒvï¿½Zï¿½Ï‚Ý‚É‚È‚ï¿½ï¿½Äï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×‚ï¿½ï¿½ï¿½ï¿½ï¿½
         if (ip2 >= cos(30.0f * DegToRad))
         {
             transform.rotation.y = atan2f(velocity.x, velocity.z);
@@ -130,7 +132,7 @@ void CPlayer::UpdateNormal()
 #endif
         transform.position += (velocity * 0.1f);
         CGolem* gom = ObjectManager::FindGameObject<CGolem>();
-            transform.position += gom->ColldeSphere(transform.position + VECTOR3(0, 0.5f, 0), 0.5f);
+        transform.position += gom->ColldeSphere(transform.position + VECTOR3(0, 0.5f, 0), 0.5f);
         animator->MergePlay(A_WALK);
     }
     else
@@ -146,7 +148,8 @@ void CPlayer::UpdateNormal()
 
 void CPlayer::UpdateAtk1()
 {
-    if (animator->CurrentFrame() < 50.0f)
+    float f = animator->CurrentFrame();
+    if (f < 50.0f)
     {
         animator->SetPlaySpeed(2.0f);
     }
@@ -154,7 +157,8 @@ void CPlayer::UpdateAtk1()
     {
         animator->SetPlaySpeed(1.2f);
     }
-    if (animator->CurrentFrame() <= 70.0f)
+    static const float AnimCancel = 70.0f;
+    if (f <= AnimCancel)
     {
         if (GameDevice()->m_pDI->CheckKey(KD_TRG,DIK_M))
         {
@@ -172,6 +176,16 @@ void CPlayer::UpdateAtk1()
         }
     }
 
+    static const float AtkBegin = 20.0f;
+    static const float AtkEnd = 70.0f;
+    if (f >= AtkBegin && f <= AtkEnd)
+    {
+        auto golems = ObjectManager::FindGameObjects<CGolem>();
+        for (auto golm : golems)
+        {
+            golm->CollideSword(swordTop, swordBtm);
+        }
+    }
     if (animator->Finished())
     {
         animator->MergePlay(A_WALK);
@@ -181,7 +195,8 @@ void CPlayer::UpdateAtk1()
 
 void CPlayer::UpdateAtk2()
 {
-    if (animator->CurrentFrame() < 50.0f)
+    float f = animator->CurrentFrame();
+    if (f < 50.0f)
     {
         animator->SetPlaySpeed(2.0f);
     }
@@ -189,7 +204,7 @@ void CPlayer::UpdateAtk2()
     {
         animator->SetPlaySpeed(1.2f);
     }
-    if (animator->CurrentFrame() <= 70.0f)
+    if (f <= 70.0f)
     {
         if (GameDevice()->m_pDI->CheckKey(KD_TRG,DIK_M))
         {
@@ -206,6 +221,16 @@ void CPlayer::UpdateAtk2()
             attackPushed = false;
         }
     }
+    static const float AtkBegin = 20.0f;
+    static const float AtkEnd = 70.0f;
+    if (f >= AtkBegin && f <= AtkEnd)
+    {
+        auto golems = ObjectManager::FindGameObjects<CGolem>();
+        for (auto golm : golems)
+        {
+            golm->CollideSword(swordTop, swordBtm);
+        }
+    }
 
     if (animator->Finished())
     {
@@ -216,6 +241,17 @@ void CPlayer::UpdateAtk2()
 
 void CPlayer::UpdateAtk3()
 {
+    float f = animator->CurrentFrame();
+    static const float AtkBegin = 20.0f;
+    static const float AtkEnd = 70.0f;
+    if (f >= AtkBegin && f <= AtkEnd)
+    {
+        auto golems = ObjectManager::FindGameObjects<CGolem>();
+        for (auto golm : golems)
+        {
+            golm->CollideSword(swordTop, swordBtm);
+        }
+    }
     if (animator->Finished())
     {
         animator->MergePlay(A_WALK);

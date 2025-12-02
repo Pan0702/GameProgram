@@ -1,5 +1,7 @@
 #include "Golem.h"
 
+#include "EnemyManager.h"
+#include "../MyLib.h"
 #include "../Player/Player.h"
 
 class CPlayer;
@@ -31,6 +33,7 @@ CGolem::CGolem(const VECTOR3& pos, const float& rotY)
     action = ACT_STAND;
     intent = INT_WALK;
     animator->Play(A_IDLE);
+    deadTimer = 0.0f;
 }
 
 CGolem::~CGolem()
@@ -63,6 +66,15 @@ VECTOR3 CGolem::ColldeSphere(const VECTOR3& center, const float& radius)
     return VECTOR3();
 }
 
+bool CGolem::CollideSword(const VECTOR3& top, const VECTOR3& btm)
+{
+    if (CollideSegmentToSphere(top, btm, transform.position + VECTOR3(0, 1, 0), 1))
+    {
+        ChangeIntent(INT_DEAD);
+    }
+    return false;
+}
+
 void CGolem::UpdateIntention()
 {
     switch (intent)
@@ -75,6 +87,9 @@ void CGolem::UpdateIntention()
         break;
     case INT_BACK:
         IntBack();
+        break;
+    case INT_DEAD:
+        IntDead();
         break;
     default:
         break;
@@ -94,6 +109,9 @@ void CGolem::ChangeIntent(Intent inte)
         break;
     case INT_BACK:
         ChangeAction(ACT_STAND);
+        break;
+    case INT_DEAD:
+        ChangeAction(ACT_DEAD);
     default:
         break;
     }
@@ -175,6 +193,12 @@ void CGolem::IntBack()
     }
 }
 
+void CGolem::IntDead()
+{
+ 
+
+}
+
 void CGolem::UpdateAction()
 {
     switch (action)
@@ -187,6 +211,9 @@ void CGolem::UpdateAction()
         break;
     case ACT_STAND:
         ActStand();
+        break;
+    case ACT_DEAD:
+        ActDead();
         break;
     }
 }
@@ -207,6 +234,10 @@ void CGolem::ChangeAction(Action act)
         break;
     case ACT_STAND:
         animator->Play(A_IDLE);
+        animator->SetPlaySpeed(1.0f);
+        break;
+    case ACT_DEAD:
+        animator->Play(A_DEATH);
         animator->SetPlaySpeed(1.0f);
         break;
     default:
@@ -247,7 +278,11 @@ void CGolem::ActChase()
     transform.position += move * 0.05f;
     if (magnitude(plPos - transform.position) < 2.0f)
     {
-        ChangeAction(ACT_PUNCH);
+        CEnemyManager* man = ObjectManager::FindGameObject<CEnemyManager>();
+        if (man->CanAtk(this))
+        {
+            ChangeAction(ACT_PUNCH);
+        }
     }
 }
 
@@ -261,4 +296,20 @@ void CGolem::ActPunch()
 
 void CGolem::ActStand()
 {
+}
+
+void CGolem::ActDead()
+{
+    float f = animator->CurrentFrame();
+    if (f >= 50.0f) animator->SetPlaySpeed(f / 50.0f);
+    if (animator->Finished())
+    {
+        deadTimer += 1.0f;
+        if (deadTimer > 30.0f)
+        {
+            transform.position.y -= 0.01f;
+            if (transform.position.y < -1.0f)
+            DestroyMe();
+        }
+    }
 }
