@@ -1,5 +1,5 @@
 #include "Golem.h"
-
+#include "../MyLib.h"
 #include "../Player/Player.h"
 
 class CPlayer;
@@ -61,6 +61,16 @@ VECTOR3 CGolem::ColldeSphere(const VECTOR3& center, const float& radius)
     }
 
     return VECTOR3();
+}
+
+bool CGolem::CollideSword(const VECTOR3& top, const VECTOR3& btm)
+{
+    if (CollideSegmentToSphere(top, btm, transform.position + VECTOR3(0, 1, 0), 1))
+    {
+        DestroyMe();
+    }
+
+    return false;
 }
 
 void CGolem::UpdateIntention()
