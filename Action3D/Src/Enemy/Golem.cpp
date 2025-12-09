@@ -283,6 +283,9 @@ void CGolem::ActChase()
         {
             ChangeAction(ACT_PUNCH);
         }
+    }else
+    {
+        transform.position += move * 0.05f;
     }
 }
 

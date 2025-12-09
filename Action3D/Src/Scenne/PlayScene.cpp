@@ -6,6 +6,7 @@
 #include "../Player/Camera.h"
 #include "../Field.h"
 #include "../GameObject.h"
+#include "../Enemy/EnemyManager.h"
 #include "../Enemy/Golem.h"
 #include "../Player/Player.h"
 
@@ -18,6 +19,7 @@ PlayScene::PlayScene()
 	{
 		new CGolem(VECTOR3(1.5 * i, 0, 10));
 	}
+	Instantiate<CEnemyManager>();
 }
 
 PlayScene::~PlayScene()
